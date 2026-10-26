@@ -1,6 +1,6 @@
 import sys
 
-import products
+import product
 import store
 
 def go_ahead(store, choice):
@@ -75,9 +75,9 @@ def start(store):
 
 def main():
     # setup initial stock of inventory
-    product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
-                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    products.Product("Google Pixel 7", price=500, quantity=250)
+    product_list = [product.Product("MacBook Air M2", price=1450, quantity=100),
+                    product.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    product.Product("Google Pixel 7", price=500, quantity=250)
                     ]
     best_buy = store.Store(product_list)
     start(best_buy)

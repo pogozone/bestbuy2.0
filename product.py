@@ -23,19 +23,22 @@ class Product:
     def deactivate(self):
         self.active = False
 
-    def show(self):
-        print("Name:", self.name, "Price", self.price, "Quantity", self.quantity)
+#    def show(self):
+#        print("Name:", self.name, "Price", self.price, "Quantity", self.quantity)
 
     def buy(self, quantity) -> float:
-        if type(quantity) is not int or quantity <= 0:
-            print("Die Kaufmenge muss eine positive ganze Zahl sein.")
-            return 0
+        if not isinstance(quantity, int) or quantity <= 0:
+            raise ValueError("Die Kaufmenge muss eine positive ganze Zahl sein.")
+
         if not self.active:
-            print(f"Es tut uns leid, aber {self.name} haben wir nicht mehr im Sortiment.")
-            return 0
+            raise ValueError(
+                f"Es tut uns leid, aber {self.name} haben wir nicht mehr im Sortiment."
+            )
+
         if quantity > self.quantity:
-            print(f"Der Lagerbestand gibt das nicht her! Du kannst maximal {self.quantity} von {self.name} bestellen.")
-            return 0
+            raise ValueError(
+                f"Der Lagerbestand gibt das nicht her! Du kannst maximal {self.quantity} von {self.name} bestellen."
+            )
 
         price_total = quantity * self.price
         self.quantity -= quantity
@@ -45,6 +48,9 @@ class Product:
 
         return price_total
 
+    def __str__(self) -> str:
+        return f"Name: {self.name} Price {self.price} Quantity {self.quantity}"
+
 def main():
     bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
     mac = Product("MacBook Air M2", price=1450, quantity=100)
@@ -53,19 +59,24 @@ def main():
     print(mac.buy(100))
     print(mac.is_active())
 
-    bose.show()
-    mac.show()
+    print(bose)
+    print(mac)
+#    bose.show()
+#    mac.show()
 
     bose.set_quantity(1000)
-    bose.show()
+    print(bose)
+#    bose.show()
 
     # Zu viel bestellt: Warnung und Abbruch
     bose.buy(50000000)
-    bose.show()
+#    bose.show()
+    print(bose)
 
     # Gültige Bestellung, neuer Lagerbestand wird angezeigt
     bose.buy(5)
-    bose.show()
+#    bose.show()
+    print(bose)
 
 if __name__ == "__main__":
     main()
