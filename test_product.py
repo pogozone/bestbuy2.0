@@ -2,6 +2,7 @@ import pytest
 
 from product import Product
 
+### test product: class & methods
 def test_get_quantity():
     product = Product("Test Product", price=250, quantity=10)
     assert product.get_quantity() == 10
