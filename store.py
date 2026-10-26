@@ -6,51 +6,52 @@ class Store:
         self.basket = []
         self.products_in_store = []
         self.product_list = product_list
-        for product in product_list:
-            self.add_product(product)
+        for this_product in product_list:
+            self.add_product(this_product)
 
-    def add_product(self, product):
-        self.products_in_store.append(product)
+    def add_product(self, this_product):
+        self.products_in_store.append(this_product)
 
-    def remove_product(self, product):
-        self.products_in_store.remove(product)
+    def remove_product(self, this_product):
+        self.products_in_store.remove(this_product)
 
     def get_all_products(self):
         return [
             product
             for product in self.products_in_store
-            if product.is_active()
+                if product.is_active()
         ]
 
     def show_all_products(self):
-        for index, product in enumerate(self.get_all_products(), start=1):
+        for index, this_product in enumerate(self.get_all_products(), start=1):
             print(
-                f"{index}. {product.name} | "
-                f"Price: {product.price:.2f} | "
-                f"Quantity: {product.quantity}"
+                f"{index}. {this_product.name} | "
+                f"Price: {this_product.price:.2f} | "
+                f"Quantity: {this_product.quantity}"
             )
 
-    def order(self, shopping_list):
+    @staticmethod
+    def order(shopping_list):
         total_price = 0.0
-        for product, amount in shopping_list:
-            total_price += product.buy(amount)
+        for this_product, amount in shopping_list:
+            total_price += this_product.buy(amount)
         return total_price
 
     def create_basket(self, shopping_list):
-        for product, amount in shopping_list:
+        for this_product, amount in shopping_list:
             self.basket.append({
-                "product": product,
-                "name": product.name,
+                "product": this_product,
+                "name": this_product.name,
                 "amount": amount,
-                "total_price": product.price * amount,
+                "total_price": this_product.price * amount,
             })
 
         return self.basket
 
     def clear_order(self):
         for item in self.basket:
-            product = item["product"]
-            product.set_quantity(product.quantity + item["amount"])
+            this_product = item["product"]
+            this_product.set_quantity(this_product.quantity + item["amount"])
 
         self.basket.clear()
 
@@ -58,17 +59,17 @@ class Store:
         self.basket = []
 
     def show_basket(self):
-        for index, item in enumerate(self.basket, start=1):
+        for index, this_product in enumerate(self.basket, start=1):
             print(
-                f'{index}. {item["name"]} | '
-                f'Menge: {item["amount"]} | '
-                f'Total: {item["total_price"]:.2f} €'
+                f'{index}. {this_product["name"]} | '
+                f'Menge: {this_product["amount"]} | '
+                f'Total: {this_product["total_price"]:.2f} €'
             )
 
     def get_total_quantity(self):
         total_quantity = 0
-        for product in self.products_in_store:
-            total_quantity += product.quantity
+        for this_product in self.products_in_store:
+            total_quantity += this_product.quantity
         return total_quantity
 
 def main():
