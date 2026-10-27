@@ -56,7 +56,7 @@ class TestStore(unittest.TestCase):
         self.assertIn(self.bose, self.store.get_all_products())
 
     def test_create_basket_does_not_change_stock(self):
-        basket = self.store.create_basket([(self.mac, 2)])
+        basket = self.store.order([(self.mac, 2)])
 
         self.assertEqual(len(basket), 1)
         self.assertIs(basket[0]["product"], self.mac)
@@ -68,7 +68,6 @@ class TestStore(unittest.TestCase):
     def test_cancel_restores_stock_and_empties_basket(self):
         shopping_list = [(self.mac, 1), (self.bose, 2)]
         self.store.order(shopping_list)
-        self.store.create_basket(shopping_list)
 
         self.store.clear_order()
 
@@ -83,7 +82,6 @@ class TestStore(unittest.TestCase):
     def test_cancel_reactivates_sold_out_product(self):
         shopping_list = [(self.mac, 100)]
         self.store.order(shopping_list)
-        self.store.create_basket(shopping_list)
 
         self.store.clear_order()
 
@@ -94,9 +92,8 @@ class TestStore(unittest.TestCase):
     def test_clear_basket_does_not_restore_stock(self):
         shopping_list = [(self.mac, 2)]
         self.store.order(shopping_list)
-        self.store.create_basket(shopping_list)
 
-        self.store.clear_basket()
+        self.store.clear_order()
 
         self.assertEqual(self.store.basket, [])
         self.assertEqual(self.mac.quantity, 98)

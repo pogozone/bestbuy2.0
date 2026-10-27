@@ -1,7 +1,8 @@
-import sys
-
 import product
 import store
+import promotion
+
+from product import NonStockedProduct
 
 def go_ahead(store, choice):
     try:
@@ -32,7 +33,7 @@ def go_ahead(store, choice):
             product = available_products[number - 1]
 
             amount = int(input("\nAmount to buy: "))
-            if not 1 <= amount <= product.quantity:
+            if amount < 1 or (not isinstance(product, NonStockedProduct) and amount > product.quantity):
                 print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
                 return True
 
@@ -42,27 +43,33 @@ def go_ahead(store, choice):
 
         shopping_list = [(product, amount)]
         total = store.order(shopping_list)
-        store.create_basket(shopping_list)
         print(f"\nTotal: {total:.2f} €\nBasket:")
         store.show_basket()
+        return True
 
     elif choice == 4:
-#        store.clear_basket()
+        store.show_basket()
+        return True
+    elif choice == 5:
         store.clear_order()
         print("\nOrder cancelled. Stock restored.")
+        return True
 
-    elif choice >= 5:
+    elif choice == 6:
         print("\nGoodbye!")
-        sys.exit()
+        return False
 
     else:
         print("\nPlease enter a number from 1 to 5.\n")
+
+    return True
 
 def start(store):
     menu = [
         "List all products in store",
         "Show total amount in store",
         "Make an order",
+        "Show basket",
         "Clear basket",
         "Quit"
     ]
@@ -71,15 +78,36 @@ def start(store):
         for index, item in enumerate(menu, start=1):
             print(f"{index}. {item}")
         choice = input("\nPlease choose a number: ").strip()
-        go_ahead(store, choice)
+        if not go_ahead(store, choice):
+            break
 
 def main():
+
     # setup initial stock of inventory
-    product_list = [product.Product("MacBook Air M2", price=1450, quantity=100),
-                    product.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    product.Product("Google Pixel 7", price=500, quantity=250)
-                    ]
+    product_list = [
+        product.Product("MacBook Air M2", price=1450, quantity=100),
+        product.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+        product.Product("Google Pixel 7", price=500, quantity=250),
+        product.NonStockedProduct("Windows License", price=125),
+        product.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+    ]
+
+    # Create promotion catalog
+    second_half_price = promotion.SecondHalfPrice("Second Half price!")
+    third_one_free = promotion.ThirdOneFree("Third One Free!")
+    thirty_percent = promotion.PercentDiscount("30% off!", percent=30)
+
+    # Add promotions to products
+    product_list[0].set_promotion(second_half_price)
+    product_list[1].set_promotion(third_one_free)
+    product_list[3].set_promotion(thirty_percent)
+    product_list[3].set_promotion(third_one_free)
+
     best_buy = store.Store(product_list)
+
+    for index, prod in enumerate(product_list):
+        print(f"Produkt {index} :: {prod}")
+
     start(best_buy)
 
 if __name__ == "__main__":
