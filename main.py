@@ -4,7 +4,7 @@ import promotion
 
 from product import NonStockedProduct
 
-def go_ahead(store, choice):
+def go_ahead(this_store, choice):
     try:
         choice = int(choice)
     except ValueError:
@@ -13,15 +13,15 @@ def go_ahead(store, choice):
 
     if choice == 1:
         print("\nAll products available:\n")
-        store.show_all_products()
+        this_store.show_all_products()
 
     elif choice == 2:
-        print(f"\nTotal amount in store: {store.get_total_quantity()}")
+        print(f"\nTotal amount in store: {this_store.get_total_quantity()}")
 
     elif choice == 3:
 
-        available_products = store.get_all_products()
-        store.show_all_products()
+        available_products = this_store.get_all_products()
+        this_store.show_all_products()
 
         try:
 
@@ -30,28 +30,28 @@ def go_ahead(store, choice):
                 print("Dieses Produkt gibt es nicht.")
                 return True
 
-            product = available_products[number - 1]
+            this_product = available_products[number - 1]
 
             amount = int(input("\nAmount to buy: "))
-            if amount < 1 or (not isinstance(product, NonStockedProduct) and amount > product.quantity):
-                print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
+            if amount < 1 or (not isinstance(this_product, NonStockedProduct) and amount > this_product.quantity):
+                print(f"Bitte wähle zwischen 1 und {this_product.quantity} Stück.")
                 return True
 
         except ValueError:
             print("Bitte gib eine ganze Zahl ein.")
             return True
 
-        shopping_list = [(product, amount)]
-        total = store.order(shopping_list)
+        shopping_list = [(this_product, amount)]
+        total = this_store.order(shopping_list)
         print(f"\nTotal: {total:.2f} €\nBasket:")
-        store.show_basket()
+        this_store.show_basket()
         return True
 
     elif choice == 4:
-        store.show_basket()
+        this_store.show_basket()
         return True
     elif choice == 5:
-        store.clear_order()
+        this_store.clear_order()
         print("\nOrder cancelled. Stock restored.")
         return True
 
@@ -64,7 +64,7 @@ def go_ahead(store, choice):
 
     return True
 
-def start(store):
+def start(this_store):
     menu = [
         "List all products in store",
         "Show total amount in store",
@@ -78,7 +78,7 @@ def start(store):
         for index, item in enumerate(menu, start=1):
             print(f"{index}. {item}")
         choice = input("\nPlease choose a number: ").strip()
-        if not go_ahead(store, choice):
+        if not go_ahead(this_store, choice):
             break
 
 def main():
@@ -109,6 +109,18 @@ def main():
         print(f"Produkt {index} :: {prod}")
 
     start(best_buy)
+
+# setup initial stock of inventory
+    mac =  product.Product("MacBook Air M2", price=1450, quantity=100)
+    bose = product.Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+    pixel = product.LimitedProduct("Google Pixel 7", price=500, quantity=250, maximum=1)
+
+    best_buy = store.Store([mac, bose])
+#    mac.price = -100         # Should give error
+    print(mac)               # Should print `MacBook Air M2, Price: $1450 Quantity:100`
+    print(mac > bose)        # Should print True
+    print(mac in best_buy)   # Should print True
+    print(pixel in best_buy) # Should print False
 
 if __name__ == "__main__":
     main()

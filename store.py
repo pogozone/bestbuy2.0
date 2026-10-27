@@ -75,3 +75,5 @@ class Store:
             total_quantity += product.quantity
         return total_quantity
 
+    def __contains__(self, product) -> bool:
+        return product in self.products_in_store

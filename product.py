@@ -1,5 +1,3 @@
-from promotion import Promotion
-
 
 class Product:
 
@@ -9,6 +7,16 @@ class Product:
         self.quantity = quantity
         self.active = quantity > 0
         self.promotion_list = []
+
+    @property
+    def price(self) -> float:
+        return self._price
+
+    @price.setter
+    def price(self, value: float):
+        if value < 0:
+            raise ValueError("Der Preis darf nicht negativ sein.")
+        self._price = value
 
     def get_quantity(self) -> int:
         return self.quantity
@@ -69,10 +77,11 @@ class Product:
     def __str__(self) -> str:
         return f"Name: {self.name} Price: {self.price} Quantity: {self.quantity} Promotions: {self.promotion_list}"
 
-#    def __str__(self) -> str:
-#        promo_names = [type(p).__name__ for p in self.promotion_list]
-#        promo_text = f", Promotions: {', '.join(promo_names)}" if promo_names else ""
-#        return f"Name: {self.name} Price: {self.price} Quantity: {self.quantity}{promo_text}"
+    def __gt__(self, other):
+        return self.quantity > other.quantity
+
+    def __lt__(self, other):
+        return self.quantity < other.quantity
 
 class NonStockedProduct(Product):
 
