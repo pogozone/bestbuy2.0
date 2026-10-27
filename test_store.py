@@ -55,16 +55,6 @@ class TestStore(unittest.TestCase):
         self.assertNotIn(self.mac, self.store.get_all_products())
         self.assertIn(self.bose, self.store.get_all_products())
 
-    def test_create_basket_does_not_change_stock(self):
-        basket = self.store.order([(self.mac, 2)])
-
-        self.assertEqual(len(basket), 1)
-        self.assertIs(basket[0]["product"], self.mac)
-        self.assertEqual(basket[0]["name"], "MacBook Air M2")
-        self.assertEqual(basket[0]["amount"], 2)
-        self.assertAlmostEqual(basket[0]["total_price"], 2900.0)
-        self.assertEqual(self.mac.quantity, 100)
-
     def test_cancel_restores_stock_and_empties_basket(self):
         shopping_list = [(self.mac, 1), (self.bose, 2)]
         self.store.order(shopping_list)
@@ -89,15 +79,6 @@ class TestStore(unittest.TestCase):
         self.assertTrue(self.mac.is_active())
         self.assertIn(self.mac, self.store.get_all_products())
 
-    def test_clear_basket_does_not_restore_stock(self):
-        shopping_list = [(self.mac, 2)]
-        self.store.order(shopping_list)
-
-        self.store.clear_order()
-
-        self.assertEqual(self.store.basket, [])
-        self.assertEqual(self.mac.quantity, 98)
-
     def test_empty_store_and_empty_order(self):
         empty_store = Store([])
 
@@ -106,6 +87,23 @@ class TestStore(unittest.TestCase):
         self.assertEqual(empty_store.order([]), 0.0)
         empty_store.clear_order()
 
+    def test_order_updates_stock_and_returns_total(self):
+        total = self.store.order([(self.mac, 2)])
+
+        self.assertEqual(len(self.store.basket), 1)
+        self.assertEqual(self.store.basket[0]["name"], "MacBook Air M2")
+        self.assertEqual(self.store.basket[0]["amount"], 2)
+        self.assertAlmostEqual(total, 2900.0)
+        self.assertEqual(self.mac.quantity, 98)
+
+    def test_clear_order_restores_stock(self):
+        shopping_list = [(self.mac, 2)]
+        self.store.order(shopping_list)
+
+        self.store.clear_order()
+
+        self.assertEqual(self.store.basket, [])
+        self.assertEqual(self.mac.quantity, 100)
 
 if __name__ == "__main__":
     unittest.main()
