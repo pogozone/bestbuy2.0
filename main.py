@@ -105,9 +105,6 @@ def main():
 
     best_buy = store.Store(product_list)
 
-    for index, prod in enumerate(product_list):
-        print(f"Produkt {index} :: {prod}")
-
     start(best_buy)
 
 # setup initial stock of inventory
