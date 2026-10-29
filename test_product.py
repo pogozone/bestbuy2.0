@@ -17,7 +17,7 @@ def test_set_quantity_success():
 
 
 def test_set_quantity_to_zero():
-    # Testet den Grenzfall: Bestand wird 0 -> active muss False werden
+    # Testet den Grenzfall: Wenn der Bestand 0 ist, wird active auf False gesetzt
     product = Product("Test Product", price=250, quantity=10)
     product.set_quantity(0)
     assert product.quantity == 0
@@ -68,7 +68,8 @@ def test_buy_invalid_type_or_negative_quantity():
         product.buy(-1)
 
     with pytest.raises(ValueError):
-        product.buy(2.5)  # float statt int
+        # noinspection PyTypeChecker
+        product.buy(2.5)
 
 
 def test_buy_exceeds_stock():

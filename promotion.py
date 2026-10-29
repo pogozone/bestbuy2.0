@@ -1,31 +1,28 @@
-#from product import Product
+"""Rabattaktionen"""
 
-class Promotion:
+from abc import ABC, abstractmethod
+
+
+class Promotion(ABC):
+    """Schnittstelle für Rabattaktionen."""
     def __init__(self, name):
         self.name = name
-#        self.promotion_list = []
-#        self.promotion_list = []
-#
-#    def set_promotion(self, name, product_id):
-#        self.promotion_list[name].append(product_id)
-#
-#    def remove_promotion(self, name, product_id):
-#        self.promotion_list[name].remove(product_id)
-#
-#    def get_all_promotions(self):
-#        return self.promotion_list
-#
-#    def apply_promotion(self, product, quantity: int):
-#        pass
+
+    @abstractmethod
+    def apply_promotion(self, product, quantity: int):
+        """Berechnet den Aktionspreis für die angegebene Menge."""
+        raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class SecondHalfPrice(Promotion):
-    def __init__(self, name):
-        super().__init__(name)
-
+    """Berechnet jedes zweite Stück zum halben Preis."""
     def apply_promotion(self, product, quantity: int):
 
         # Beispiel-Logik: Jedes zweite Produkt zum halben Preis
+        """Berechnet den Aktionspreis für die angegebene Menge."""
         normal_price = product.price * quantity
 
         if quantity < 2:
@@ -43,7 +40,9 @@ class SecondHalfPrice(Promotion):
 
 class ThirdOneFree(Promotion):
 
+    """Berechnet jedes dritte Stück kostenlos."""
     def apply_promotion(self, product, quantity: int):
+        """Berechnet den Aktionspreis für die angegebene Menge."""
         return (quantity - quantity // 3) * product.price
 
     def __repr__(self) -> str:
@@ -51,14 +50,15 @@ class ThirdOneFree(Promotion):
 
 
 class PercentDiscount(Promotion):
+    """Reduziert den Gesamtpreis um einen festen Prozentsatz."""
     def __init__(self, name, percent):
         super().__init__(name)
-        self.name = name
         self.percent = percent
 
     def apply_promotion(self, product, quantity: int):
+        """Berechnet den Aktionspreis für die angegebene Menge."""
         price = product.price * quantity
         return price * (1 - self.percent / 100)
 
     def __repr__(self) -> str:
-        return "PercentDiscount"
+        return f"PercentDiscount ({self.percent}%)"
